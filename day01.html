@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <style>
+        /* 侧边栏容器样式：固定宽度256px、全屏高度、白色背景、内边距16px */
+        .sidebar {
+            width: 256px;
+            height: 100vh;
+            background-color: #ffffff;
+            padding: 16px;
+            /* 防止内容溢出，添加滚动条 */
+            overflow-y: auto;
+        }
+
+        /* 标题样式：加粗、18px字体、底部间距16px */
+        .sidebar h2 {
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 16px;
+            margin-top: 0;
+        }
+
+        /* 模块标题样式：加粗、底部间距8px */
+        .sidebar .favorite-section h3,
+        .sidebar .category-section h3 {
+            font-size: 16px;
+            font-weight: bold;
+            margin-bottom: 8px;
+            margin-top: 24px;
+        }
+
+        /* 列表容器样式：清除默认padding和margin */
+        .sidebar ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        /* 列表项样式：hover效果、内边距8px、圆角4px、鼠标指针变化 */
+        .sidebar .favorite-list li,
+        .sidebar .category-list li {
+            padding: 8px;
+            border-radius: 4px;
+            margin-bottom: 4px;
+            cursor: pointer;
+            transition: background-color 0.2s ease;
+        }
+
+        /* 列表项hover效果：背景色#f3f4f6 */
+        .sidebar .favorite-list li:hover,
+        .sidebar .category-list li:hover {
+            background-color: #f3f4f6;
+        }
+
+        /* 自定义滚动条样式：宽度6px、滑块灰色、圆角3px */
+        .sidebar::-webkit-scrollbar {
+            width: 6px ;
+        }
+        .sidebar::-webkit-scrollbar-thumb {
+            background-color: #d1d5db;
+            border-radius: 3px;
+        }
+        .sidebar::-webkit-scrollbar-track {
+            background-color: #f9fafb;
+        }
+    </style>
+</head>
+<body>
+    <!-- 复用Day1的HTML结构 -->
+    <div class="sidebar">
+        <h2>应用商店侧边栏</h2>
+
+        <div class="favorite-section">
+            <h3>我的收藏</h3>
+            <ul class="favorite-list">
+                <li>Chrome翻译</li>
+                <li>掘金插件</li>
+                <li>思维导图工具</li>
+            </ul>
+        </div>
+
+        <div class="category-section">
+            <h3>应用分类</h3>
+            <ul class="category-list">
+                <li>生产力</li>
+                <li>娱乐</li>
+                <li>工具</li>
+            </ul>
+        </div>
+    </div>
+</body>
+</html>
