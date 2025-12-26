@@ -1,0 +1,76 @@
+/*1.变量声明const声明常量,值不可修改;let,声明变量，值可修改。注意,这两个都有块级作用域，（{}内有效）
+// 用var(无块级作用域，变量提升导致意外结果)
+if (true) {
+  var testVar = 'var变量';
+}
+console.log(testVar); // 输出:var变量(变量提升到全局，块内定义的变量在块外可访问)
+
+// 用let(块级作用域，避免该问题)
+if (true) {
+  let testLet = 'let变量';
+}
+console.log(testLet); // 报错:testLet is not defined(块内变量仅块内可访问，更符合逻辑预期)
+2.箭头函数:语法格式、this指向。
+// 第一步：准备侧边栏元素（模拟真实场景）
+const favoriteItem = document.createElement('li');
+favoriteItem.innerText = 'Chrome翻译';
+const addBtn = document.createElement('button');
+addBtn.innerText = '添加收藏';
+document.body.appendChild(favoriteItem);
+document.body.appendChild(addBtn);
+
+// 1. 箭头函数语法简化演示
+const arr = [1,2,3];
+// 传统函数 vs 箭头函数(map遍历)
+const traditionalMap = arr.map(function(item) {
+  return item * 2;
+  /*function用来封装一段可重复执行的代码逻辑*/
+});
+const arrowMap = arr.map(item => item * 2); // 单参数+单句，省略括号/大括号/return
+console.log('传统函数map结果:', traditionalMap); // 输出：[2,4,6]
+console.log('箭头函数map结果:', arrowMap); // 输出：[2,4,6]
+
+// 2. 传统函数:this 动态绑定（谁调用指向谁）
+// 场景1:事件绑定
+favoriteItem.onclick = function() {
+  console.log('传统函数-点击列表项：', this); // 指向：<li>Chrome翻译</li>
+  console.log('列表项名称：', this.innerText); // 输出:Chrome翻译
+};
+// 场景2:对象方法
+const sidebarObj = {
+  name: '应用商店侧边栏',
+  showName: function() {
+    console.log('传统函数-对象方法：', this); // 指向:sidebarObj 对象
+    console.log('侧边栏名称：', this.name); // 输出：应用商店侧边栏
+  }
+};
+sidebarObj.showName();
+
+// 3. 箭头函数:this 静态绑定（继承外层作用域）
+// 场景1:事件绑定
+setTimeout(() => {
+  favoriteItem.onclick = () => {
+    console.log('箭头函数-点击列表项：', this); // 指向:window(继承外层setTimeout回调的this)
+    // console.log(this.innerText); // 报错:undefined(window无innerText属性)
+    console.log('列表项名称：', favoriteItem.innerText); // 正确：直接操作元素变量
+  };
+}, 1000);
+
+// 场景2:对象方法
+sidebarObj.showNameArrow = () => {
+  console.log('箭头函数-对象方法：', this); // 指向:window(继承全局作用域)
+  console.log('侧边栏名称：', this.name); // 输出:undefined
+};
+sidebarObj.showNameArrow();
+
+// 场景3:按钮点击事件（样式修改对比）
+addBtn.onclick = function() {
+  this.style.backgroundColor = '#f3f4f6'; // 正常:this指向按钮
+};
+setTimeout(() => {
+  addBtn.onclick = () => {
+    // this.style.backgroundColor = '#f3f4f6'; // 报错:window无style属性
+    addBtn.style.backgroundColor = '#f3f4f6'; // 正确：直接操作按钮变量
+  };
+}, 2000);
+*/
