@@ -1,0 +1,70 @@
+<javascript>
+    1. 对象解构：提取侧边栏配置
+  const sidebarConfig = {
+  width: '256px',
+  bgColor: '#ffffff',
+  padding: '16px',
+  title: '应用商店侧边栏'
+};
+// 基础解构:提取width和title
+const { width, title } = sidebarConfig;
+console.log('侧边栏宽度：', width); // 输出:256px
+console.log('侧边栏标题：', title); // 输出：应用商店侧边栏
+
+// 解构重命名：避免变量名冲突
+const { bgColor: background Color } = sidebarConfig;
+console.log('侧边栏背景色：', backgroundColor); // 输出：#ffffff
+
+// 2. 数组解构：提取分类列表数据
+const categories = ['生产力', '娱乐', '工具', '教育'];
+// 基础解构：按索引提取前两个
+const [firstCate, secondCate] = categories;
+console.log('第一个分类：', firstCate); // 输出：生产力
+console.log('第二个分类：', secondCate); // 输出：娱乐
+
+// 跳过元素:提取第1个和第3个
+const [productivity, , toolCate] = categories;
+console.log('第三个分类：', toolCate); // 输出：工具
+
+// 3. 实战应用：快速设置侧边栏样式
+const sidebar = document.createElement('div');
+sidebar.style.width = width;
+sidebar.style.padding = sidebarConfig.padding;
+sidebar.innerText = title;
+document.body.appendChild(sidebar); // 页面渲染侧边栏标题容器
+
+// 4.核心数组方法
+const favorites = ['Chrome翻译', '掘金插件', '思维导图工具', 'Todo清单', '截图工具'];
+
+// 1. forEach:遍历收藏列表，打印索引和名称（无返回值）
+console.log('=== 所有收藏项 ===');
+favorites.forEach((item, index) => {
+  console.log(`索引${index}:${item}`);//item为当前元素,index为索引位置
+});
+
+// 2. map:生成收藏列表HTML结构(返回新数组，核心渲染方法)
+const favoriteHtml = favorites.map((item, index) => {
+  // 为每个列表项添加索引，方便后续操作
+  return `<li data-index="${index}">${item}</li>`;
+}).join(''); // 关键：转为字符串，避免页面出现逗号，数组默认用,连接
+console.log('收藏列表HTML:', favoriteHtml);
+
+// 实战：渲染到页面
+const favoriteList = document.createElement('ul');
+favoriteList.className = 'favorite-list';为新的列表取一个类名
+favoriteList.innerHTML = favoriteHtml;
+document.body.appendChild(favoriteList);<body>标签中增加列表项
+    
+
+// 3. filter:筛选含“工具”的收藏项（返回符合条件的新数组）//筛选符合条件的元素
+const toolFavorites = favorites.filter(item => {
+  return item.includes('工具'); // 筛选条件：包含“工具”
+});
+console.log('=== 工具类收藏项 ===', toolFavorites); // 输出：["思维导图工具", "截图工具"]
+
+// 实战：渲染筛选后的列表
+const toolList = document.createElement('ul');
+toolList.className = 'tool-favorite-list';
+toolList.innerHTML = toolFavorites.map(item => `<li>${item}</li>`).join('');
+document.body.appendChild(toolList);
+</javascript>
