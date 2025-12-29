@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>应用商店侧边栏（Day2+Day3整合版）</title>
+    <style>
+        /* 侧边栏容器样式：固定宽度256px、全屏高度、白色背景、内边距16px */
+        .sidebar {
+            width: 256px;
+            height: 100vh;
+            background-color: #ffffff;
+            padding: 16px;
+            /* 防止内容溢出，添加滚动条 */
+            overflow-y: auto;
+            border-right: 1px solid #f3f4f6;
+            box-sizing: border-box;
+        }
+
+        /* 标题样式：加粗、18px字体、底部间距16px */
+        .sidebar h2 {
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 16px;
+            margin-top: 0;
+            color: #111827;
+        }
+
+        /* 模块标题样式：加粗、底部间距8px */
+        .sidebar .favorite-section h3,
+        .sidebar .category-section h3,
+        .sidebar .tool-favorite-section h3 {
+            font-size: 16px;
+            font-weight: bold;
+            margin-bottom: 8px;
+            margin-top: 24px;
+            color: #374151;
+        }
+
+        /* 列表容器样式：清除默认padding和margin */
+        .sidebar ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        /* 列表项样式：hover效果、内边距8px、圆角4px、鼠标指针变化 */
+        .sidebar .favorite-list li,
+        .sidebar .category-list li,
+        .sidebar .tool-favorite-list li {
+            padding: 8px;
+            border-radius: 4px;
+            margin-bottom: 4px;
+            cursor: pointer;
+            transition: background-color 0.2s ease;
+            color: #1f2937;
+            font-size: 14px;
+        }
+
+        /* 列表项hover效果：背景色#f3f4f6 */
+        .sidebar .favorite-list li:hover,
+        .sidebar .category-list li:hover,
+        .sidebar .tool-favorite-list li:hover {
+            background-color: #f3f4f6;
+        }
+
+        /* 自定义滚动条样式：宽度6px、滑块灰色、圆角3px */
+        .sidebar::-webkit-scrollbar {
+            width: 6px;
+        }
+        .sidebar::-webkit-scrollbar-thumb {
+            background-color: #d1d5db;
+            border-radius: 3px;
+        }
+        .sidebar::-webkit-scrollbar-track {
+            background-color: #f9fafb;
+        }
+
+        /* 错误提示样式 */
+        .error-tip {
+            color: #dc2626;
+            font-size: 14px;
+            padding: 8px;
+        }
+
+        /* 筛选后的工具列表样式 */
+        .tool-favorite-section {
+            margin-top: 16px;
+        }
+    </style>
+</head>
+<body>
+    <!-- 复用Day2的HTML结构，新增筛选列表容器 -->
+    <div class="sidebar">
+        <h2 id="sidebar-title">应用商店侧边栏</h2>
+
+        <div class="favorite-section">
+            <h3>我的收藏</h3>
+            <ul class="favorite-list" id="favorite-list">
+                <!-- Day3用JS动态渲染 -->
+            </ul>
+        </div>
+
+        <div class="category-section">
+            <h3>应用分类</h3>
+            <ul class="category-list" id="category-list">
+                <!-- Day3用JS动态渲染 -->
+            </ul>
+        </div>
+
+        <div class="tool-favorite-section">
+            <h3>工具类收藏（筛选结果）</h3>
+            <ul class="tool-favorite-list" id="tool-favorite-list">
+                <!-- Day3用JS筛选后渲染 -->
+            </ul>
+        </div>
+    </div>
+
+    <script>
+        // ====================== Day3知识点1：let/const 变量声明 ======================
+        // const：存储固定数据（侧边栏配置、初始分类列表）
+        const sidebarConfig = {
+            width: '256px',
+            bgColor: '#ffffff',
+            title: '应用商店侧边栏'
+        };
+        const categories = ['生产力', '娱乐', '工具', '教育', '设计'];
+        // let：存储动态数据（当前选中分类）
+        let currentSelectedCate = '';
+
+        // ====================== Day3知识点2：解构赋值（数组+对象） ======================
+        // 对象解构：提取侧边栏配置
+        const { width, title, bgColor } = sidebarConfig;
+        // 数组解构：提取前两个分类
+        const [firstCate, secondCate] = categories;
+        console.log('侧边栏宽度：', width);
+        console.log('第一个分类：', firstCate);
+        // 更新页面侧边栏标题
+        document.getElementById('sidebar-title').innerText = title;
+
+        // ====================== Day3知识点3：Promise 异步获取收藏列表 ======================
+        // 模拟异步获取收藏列表数据
+        function getFavoritesData() {
+            return new Promise((resolve, reject) => {
+                // 模拟网络延迟1.5秒
+                setTimeout(() => {
+                    // 模拟请求成功（可注释此行，打开下面一行测试失败场景）
+                    const mockData = ['Chrome翻译', '掘金插件', '思维导图工具', 'Todo清单', '截图工具'];
+                    resolve(mockData);
+
+                    // 模拟请求失败
+                    // reject(new Error('网络异常，获取收藏列表失败！'));
+                }, 1500);
+            });
+        }
+
+        // ====================== Day3知识点4：数组方法（map/forEach/filter） ======================
+        // 获取页面DOM元素
+        const favoriteList = document.getElementById('favorite-list');
+        const categoryList = document.getElementById('category-list');
+        const toolFavoriteList = document.getElementById('tool-favorite-list');
+
+        // 1. 先显示收藏列表加载状态
+        favoriteList.innerText = '收藏列表加载中...';
+
+        // 2. 调用Promise，异步获取并处理收藏列表
+        getFavoritesData()
+            .then(favorites => {
+                // 清空加载状态
+                favoriteList.innerText = '';
+
+                // map方法：动态渲染收藏列表（核心）
+                const favoriteHtml = favorites.map((item, index) => {
+                    return `<li data-index="${index}">${item}</li>`;
+                }).join('');
+                favoriteList.innerHTML = favoriteHtml;
+
+                // filter方法：筛选工具类收藏项
+                const toolFavorites = favorites.filter(item => {
+                    return item.includes('工具');
+                });
+                // 渲染筛选后的工具列表
+                const toolFavoriteHtml = toolFavorites.map(item => `<li>${item}</li>`).join('');
+                toolFavoriteList.innerHTML = toolFavoriteHtml;
+
+                // 3. map方法：动态渲染分类列表
+                const categoryHtml = categories.map(item => `<li>${item}</li>`).join('');
+                categoryList.innerHTML = categoryHtml;
+
+                // 4. forEach方法：为分类项批量绑定点击事件（箭头函数）
+                const categoryItems = document.querySelectorAll('.category-list li');
+                categoryItems.forEach(item => {
+                    // 箭头函数：绑定点击事件
+                    item.onclick = () => {
+                        currentSelectedCate = item.innerText;
+                        // console.log输出：调试选中的分类
+                        console.log('当前选中分类：', currentSelectedCate);
+                        alert(`你选中了「${currentSelectedCate}」分类`);
+                    };
+                });
+            })
+            .catch(error => {
+                // 处理请求失败：显示错误提示
+                favoriteList.innerText = '';
+                const errorTip = document.createElement('p');
+                errorTip.className = 'error-tip';
+                errorTip.innerText = error.message;
+                favoriteList.appendChild(errorTip);
+                console.error('收藏列表获取失败：', error);
+            });
+
+        // 验证传统函数与箭头函数this指向差异（Day3重点）
+        const testItem = document.createElement('li');
+        testItem.innerText = '测试this指向';
+        favoriteList.appendChild(testItem);
+
+        // 传统函数：this指向触发事件的元素
+        testItem.onclick = function() {
+            console.log('传统函数this指向：', this);
+            console.log('传统函数获取文本：', this.innerText);
+        };
+
+        // 箭头函数：this继承外层作用域（此处为window）
+        // 可注释上面的传统函数，打开下面的箭头函数对比
+        // testItem.onclick = () => {
+        //     console.log('箭头函数this指向：', this);
+        //     console.log('箭头函数获取文本：', testItem.innerText);
+        // };
+    </script>
+</body>
+</html>
